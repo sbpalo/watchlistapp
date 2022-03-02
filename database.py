@@ -12,11 +12,6 @@ CREATE_USERS_TABLE = """CREATE TABLE IF NOT EXISTS users (
     username TEXT PRIMARY KEY
 );"""
 
-CREATE_WATCHLIST_TABLE = """CREATE TABLE IF NOT EXISTS watched (
-    watcher_name TEXT,
-    name TEXT
-);"""
-
 CREATE_WATCHED_TABLE = """CREATE TABLE IF NOT EXISTS watched (
     user_username TEXT,
     movie_id INTEGER,
@@ -32,12 +27,12 @@ INSERT_WATCHED_MOVIE = "INSERT INTO watched (user_username, movie_id) VALUES (?,
 SEARCH_MOVIE = """SELECT * FROM movies WHERE title LIKE ?;"""
 SET_MOVIE_WATCHED = "UPDATE movies SET watched = 1 WHERE title = ?;"
 DELETE_MOVIE = "DELETE FROM movies WHERE title = ?;"
+SELECT_WATCHED_MOVIES = """SELECT movies.*
+FROM users
+JOIN watched ON users.username = watched.user_username
+JOIN movies ON watched.movie_id = movies.id
+WHERE users.username = %s;"""
 
-SELECT_WATCHED_MOVIES = """SELECT movies.* 
-FROM movies 
-JOIN watched ON watched.movie_id = movies.id 
-JOIN users ON users.username = watched.user_username 
-WHERE users.username = ?;"""
 
 connection = sqlite3.connect("data.db")
 
@@ -69,7 +64,7 @@ def watch_movie(username, movie_id):
 def get_watched_movies(username):
     with connection:
         cursor = connection.cursor()
-        cursor.execute(SELECT_WATCHED_MOVIES, (username))
+        cursor.execute(SELECT_WATCHED_MOVIES, (username,))
         return cursor.fetchall()
 
 def add_user(username):
