@@ -19,7 +19,6 @@ CREATE_WATCHED_TABLE = """CREATE TABLE IF NOT EXISTS watched (
     FOREIGN KEY(movie_id) REFERENCES movies(id)
 );"""
 
-
 INSERT_MOVIE = "INSERT INTO movies (title, release_timestamp) VALUES (?, ?)"
 SELECT_ALL_MOVIES = "SELECT * FROM movies;"
 SELECT_UPCOMING_MOVIES = "SELECT * FROM movies WHERE release_timestamp > ?;"
